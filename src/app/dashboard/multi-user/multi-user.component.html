@@ -1,0 +1,130 @@
+<app-nav-bar (messageEvent)="recieveMessage($event)"></app-nav-bar>
+
+<div class="page-conent top" style="background-image: url(https://s3.ap-south-1.amazonaws.com/portfolio-cloud/assets/images/bg_3.png);" [ngStyle]="{ 'margin-left' : (showSidebar==true) ? '260px' : '0px'}">
+
+ 
+<ngx-spinner
+bdColor = "rgba(51, 51, 51, 0.8)" size = "large" color = "#0de353" type = "square-jelly-box"
+></ngx-spinner>
+
+
+  <div id="friendList" *ngIf="friendListPage">
+    <div class="row justify-content-md-center">
+      <div class="col-md-8 col-md-offset-2">
+        <div class="row" *ngIf="allUserList.length<=0">
+          <div class="col-12 text-center">
+            <div class="info" style="font-size: 1.7rem;">You Don't Have Friends Yet</div>
+          </div>
+        </div>
+        <div *ngIf="allUserList.length>0">
+          <div class="row mt-5">
+            <div class="col-12 text-center mx-auto ">
+              <div class="font-weight-bold" style="font-size: 1rem;">Select Anyone Of Ur Friend To Manage Todo Lists</div>
+            </div>
+          </div>
+          <div class="row mt-5">
+            <div class="col mx-auto" style="max-width: 280px;">
+              <div class="input-group mb-3">
+                <input type="text" class="form-control searchText" aria-label="Default" aria-describedby="inputGroup-sizing-default"
+                  [(ngModel)]="search" placeholder="Search Friends in List..">
+                <div class="input-group-prepend ">
+                  <span class="input-group-text bg-success border-success text-center text-white" style="cursor: pointer;"
+                    id="inputGroup-sizing-default"><svg xmlns="http://www.w3.org/2000/svg"
+                      width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                      stroke-linecap="round" stroke-linejoin="round" class="feather feather-search">
+                      <circle cx="11" cy="11" r="8"></circle>
+                      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg></span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <ul class="list-group mx-2" *ngFor="let user of allUserList | filter : {name : search} : false">
+              <div class="row" *ngIf="user.length<=0">
+                  <div class="col-12 text-center">
+                    <div class="info" style="font-size: 1.7rem;">No Friend Available</div>
+                  </div>
+                </div>
+            <li class="list-group-item my-1" (click)="userSelected(user.userId, user.name)">
+              <div class="p-1" *ngIf="(user.name != receiverName)">
+                <app-user-details [userFullName]="user.name" [userStatus]="user.status"></app-user-details>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="friendTodo" *ngIf="friendTodoPage">
+      <div class="container-fluid" style="background-image: url(https://s3.ap-south-1.amazonaws.com/portfolio-cloud/assets/images/bg_2.png);">
+        <div class="row py-3 my-1 mr-1 align-items-center">
+          <div class="col-2">
+            <button type="button" class="btn btn-sm btn-primary" (click)="goBackfriendListPage()">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+              </svg>
+            </button>
+          </div>
+          <div class="col-8 text-center">
+            <h2 class="text-white text-truncate">{{friendName|uppercase}}</h2>
+          </div>
+          <div class="col-2">
+         </div>
+        </div>
+      </div>
+      <div class="row justify-content-md-center" *ngIf="allLists.length>0">
+          <div class="col-md-8 col-md-offset-2">
+              <div class="row mt-5">
+                  <div class="col-12 text-center mx-auto ">
+                    <div class="font-weight-bold" style="font-size: 1rem;">Select Any List To Manage Tasks</div>
+                  </div>
+                </div>
+              <div class="row mt-5" >
+                  <div class="col mx-auto" style="max-width: 280px;">
+                    <div class="input-group mb-3">
+                      <input type="text" class="form-control searchText" aria-label="Default" aria-describedby="inputGroup-sizing-default"
+                        [(ngModel)]="search" placeholder="search Todo Lists..">
+                      <div class="input-group-prepend ">
+                        <span class="input-group-text bg-success border-success text-center text-white" style="cursor: pointer;"
+                          id="inputGroup-sizing-default"><svg xmlns="http://www.w3.org/2000/svg"
+                            width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" class="feather feather-search">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                          </svg></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              <ul class="list-group mx-2" *ngIf="allLists.length>0">
+                <li class="list-group-item my-1" *ngFor="let lists of allLists | filter : {listName : search} : false |  paginate: { itemsPerPage: 3, currentPage:pageLists, id: 'first'}"
+                  style="background-image: url(https://s3.ap-south-1.amazonaws.com/portfolio-cloud/assets/images/bg_1.png);">
+                  <div class="d-flex  justify-content-between" (click)="setListData(lists.listId,lists.listName)">
+                    <h4 class="list-group-item-heading text-monospace text-white">{{lists.listName|uppercase}} <span
+                        class="badge badge-primary badge-pill font-weight-light small">{{lists.countTask}}
+                        Tasks </span></h4>
+                  </div>
+                  <div class="row">
+                    <span class="text-white small float-left">Modified On: {{ lists.modifiedOn | date:'short' }}</span>
+                  </div>
+                </li>
+              </ul>
+              <div class="panel-footer d-flex bg-info text-white pt-1 m-2" *ngIf="allLists.length>3">
+                  <pagination-controls (pageChange)="pageLists = $event" id="first" responsive="true"></pagination-controls>
+              </div>
+            </div>
+      </div>
+      <div *ngIf="allLists.length===0" class="d-flex justify-content-center mt-5">
+        <div class="font-weight-bold info" style="font-size: 1rem;">No New Public Todo List Available.</div>
+      </div>
+  </div>
+
+  <div id="manageTasks" *ngIf="friendTaskPage">
+      <app-manage-task [shareFriendId]="friendUserId" [shareUserId]="userId" [listName]="listName" [listId]="listId" (goBackListEvent)="goBackTodo()" ></app-manage-task>
+  </div>
+
+
+</div>

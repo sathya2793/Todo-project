@@ -1,0 +1,42 @@
+/* list-group */
+
+.list-group-item {
+    border-radius: 5px;
+    position: relative;
+    word-break: break-word;
+    overflow: hidden;
+    cursor: pointer;
+    background-color: #6BBEAF;
+  }
+  
+  .list-group-item:hover {
+    background-color: #8EC3BA;
+  }
+  
+  .list-group-item:hover .buttons {
+    display: inline-block;
+  }
+  
+  .list-group-item-heading {
+    font-size: 150%;
+  }
+  
+  .list-group-item-heading span {
+    font-size: 50%;
+  }
+
+  .buttons {
+    display: none;
+  }
+
+  #addSubTaskModal {
+    height: 400px;
+    top: calc(50% - 200px) !important;
+  }
+
+  .card {
+    max-width: 100%;
+  }
+  .card-text {
+    word-wrap: break-word;
+  }

@@ -1,0 +1,237 @@
+<div class="container-fluid" style="background-image: url(https://s3.ap-south-1.amazonaws.com/portfolio-cloud/assets/images/bg_2.png);">
+
+<ngx-spinner
+bdColor = "rgba(51, 51, 51, 0.8)" size = "large" color = "#0de353" type = "square-jelly-box"
+></ngx-spinner>
+
+  <div class="row py-3 my-1 mr-1 align-items-center">
+    <div class="col-2">
+      <button type="button" class="btn btn-sm btn-primary" (click)="goBackList()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+      </button>
+    </div>
+    <div class="col-8 text-center">
+      <h2 class="text-white text-truncate">{{listName|uppercase}}</h2>
+    </div>
+    <div class="col-2">
+      <button type="button" class="btn btn-sm btn-danger" (click)="undoTask(listId)">UNDO</button>
+    </div>
+  </div>
+</div>
+  <div class="container">
+  <div class="row mt-5">
+    <div class="col mx-auto" style="max-width: 280px;">
+      <div class="input-group mb-3">
+        <input type="text" class="form-control searchText" aria-label="Default" aria-describedby="inputGroup-sizing-default"
+          [(ngModel)]="taskName" placeholder="Enter a New Task" (keydown)="sendUsingKeypress($event,listId)">
+        <div class="input-group-prepend ">
+          <span class="input-group-text bg-success border-success text-center text-white" style="cursor: pointer;"
+            (click)="createNewUserTask(listId)" id="inputGroup-sizing-default">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="16"></line>
+              <line x1="8" y1="12" x2="16" y2="12"></line>
+            </svg></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row justify-content-md-center">
+    <div class="col-md-8 col-md-offset-2">
+        <div *ngIf="allTasks.length<=0" class="d-flex justify-content-center mt-5">
+            <div class="bounce"><svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-up mx-3"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+            </div> 
+          <div class="font-weight-bold" style="font-size: 1rem;">PLEASE CREATE A NEW TASK</div>
+          </div>
+          <div *ngIf="allTasks.length>0">
+            <ul class="list-group" *ngFor="let task of allTasks | paginate: { itemsPerPage: 5, currentPage: pageTasks, id: 'four'}">
+              <li class="list-group-item my-1 card">
+                <input type="checkbox" *ngIf="task.status==='open' && task.taskId!==editTaskId" (click)=markDoneTask(listId,task.taskId,task.taskName)
+                  title="Click to Mark Done">
+                <i style="color:green;" *ngIf="task.status==='done'" (click)=markOpenTask(listId,task.taskId,task.taskName)
+                  title="Click to Open Again"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" class="feather feather-check">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg> </i>
+                <span *ngIf="task.taskId===editTaskId">
+                  <input type="text" class="form-control" autofocus [(ngModel)]="editTaskName" (keydown)="sendUsingKeypressEditTask($event,listId,task.taskId)">
+                </span>
+                <span class="list-group-item-heading text-monospace text-white mx-3 card-text" *ngIf="task.status==='open' && task.taskId!==editTaskId">{{task.taskName|uppercase}}
+                  <span class="badge badge-primary badge-pill font-weight-light small" *ngIf="task.countSubTask>0">{{task.countTodoSubTask}}/{{task.countSubTask}}
+                    Sub-Tasks </span></span>
+                <span class="list-group-item-heading text-monospace text-white mx-3 card-text" style="text-decoration-line: line-through;"
+                  *ngIf="task.status==='done'">{{task.taskName|uppercase}}</span>
+                <div class="buttons  float-right" *ngIf="task.taskId!==editTaskId">
+                  <span class="btn editBtn btn-primary btn-sm" title="Add Sub Tasks" *ngIf="task.status==='open'"
+                    data-toggle="modal" data-target="#addSubTaskModal" (click)="setSubTaskData(task.taskId)">
+                    <i>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                      </svg>
+                    </i>
+                  </span>
+                  <span class="btn editBtn btn-secondary btn-sm mx-1" title="Edit Tasks" *ngIf="task.status==='open'"
+                    (click)="setEditTaskData(task.taskId,task.taskName)">
+                    <i>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit">
+                        <path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34"></path>
+                        <polygon points="18 2 22 6 12 16 8 16 8 12 18 2"></polygon>
+                      </svg>
+                    </i>
+                  </span>
+                  <span class="btn editBtn btn-danger btn-sm" (click)="deleteNotify('First Delete all Sub Tasks')" title="First Delete all Sub Tasks" *ngIf="task.countSubTask>0">
+                    <i>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        <line x1="10" y1="11" x2="10" y2="17"></line>
+                        <line x1="14" y1="11" x2="14" y2="17"></line>
+                      </svg>
+                    </i>
+                  </span>
+                  <span class="btn editBtn btn-danger btn-sm" title="Delete Tasks" *ngIf="task.countSubTask<=0"
+                    (click)="deletedUserTask(listId,task.taskId,task.taskName,task.status)">
+                    <i>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        <line x1="10" y1="11" x2="10" y2="17"></line>
+                        <line x1="14" y1="11" x2="14" y2="17"></line>
+                      </svg>
+                    </i>
+                  </span>
+                </div>
+                <div class="buttons float-right" *ngIf="task.taskId===editTaskId">
+                  <span class="btn btn-primary btn-sm mx-1" title="Save Tasks" (click)="updatedUserTask(listId,task.taskId)">
+                    <i>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                      </svg>
+                    </i>
+                  </span>
+                  <span class="btn btn-danger btn-sm" title="Cancel Tasks" (click)="cancelEditTaskData()">
+                    <i>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                      </svg>
+                    </i>
+                  </span>
+                </div>
+              </li>
+              <ul *ngIf="task.countSubTask > 0">
+                <li class="list-group-item my-1 bg-info" *ngFor="let subtask of task.subTask">
+                  <input type="checkbox" *ngIf="subtask.status==='open' && subtask.subTaskId!==editSubTaskId"
+                    (click)=markDoneSubTask(listId,task.taskId,subtask.subTaskId,subtask.subTaskName) title="Click to Mark Done">
+                  <i style="color:green;" *ngIf="subtask.status==='done'" (click)=markOpenSubTask(listId,task.taskId,subtask.subTaskId,subtask.subTaskName)
+                    title="Click to Open Again"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                      viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                      stroke-linejoin="round" class="feather feather-check">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg> </i>
+                  <span *ngIf="subtask.subTaskId===editSubTaskId">
+                    <input type="text" class="form-control" autofocus [(ngModel)]="editSubTaskName"  (keydown)="sendUsingKeypressEditSubTask($event,listId,task.taskId,subtask.subTaskId)">
+                  </span>
+                  <span class="list-group-item-heading text-monospace text-white mx-3 card-text" *ngIf="subtask.status==='open' && subtask.subTaskId!==editSubTaskId">{{subtask.subTaskName|uppercase}}</span>
+                  <span class="list-group-item-heading text-monospace text-white mx-3 card-text" style="text-decoration-line: line-through;"
+                    *ngIf="subtask.status==='done'">{{subtask.subTaskName|uppercase}}</span>
+                  <div class="buttons  float-right" *ngIf="subtask.subTaskId!==editSubTaskId">
+                    <span class="btn editBtn btn-secondary btn-sm mx-1" *ngIf="subtask.status==='open'" title="Edit sub Tasks"
+                      (click)="setEditSubTaskData(subtask.subTaskId,subtask.subTaskName)">
+                      <i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                          class="feather feather-edit">
+                          <path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34"></path>
+                          <polygon points="18 2 22 6 12 16 8 16 8 12 18 2"></polygon>
+                        </svg>
+                      </i>
+                    </span>
+                    <span class="btn editBtn btn-danger btn-sm" title="Delete Sub Tasks" (click)="deletedUserSubTask(listId,task.taskId,subtask.subTaskId,subtask.subTaskName,subtask.status)">
+                      <i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                          class="feather feather-trash-2">
+                          <polyline points="3 6 5 6 21 6"></polyline>
+                          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                          <line x1="10" y1="11" x2="10" y2="17"></line>
+                          <line x1="14" y1="11" x2="14" y2="17"></line>
+                        </svg>
+                      </i>
+                    </span>
+                  </div>
+                  <div class="buttons float-right" *ngIf="subtask.subTaskId===editSubTaskId">
+                    <span class="btn btn-primary btn-sm mx-1" title="Save Sub Tasks" (click)="updatedUserSubTask(listId,task.taskId,subtask.subTaskId)">
+                      <i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                          class="feather feather-check">
+                          <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                      </i>
+                    </span>
+                    <span class="btn btn-danger btn-sm" title="Cancel Sub Tasks" (click)="cancelEditSubTaskData()">
+                      <i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                          class="feather feather-x">
+                          <line x1="18" y1="6" x2="6" y2="18"></line>
+                          <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                      </i>
+                    </span>
+                  </div>
+                </li>
+              </ul>
+            </ul>
+            <div class="panel-footer d-flex bg-info text-white pt-3 m-1" *ngIf="allTasks.length>5">
+              <pagination-controls (pageChange)="pageTasks = $event" id="four" responsive="true"></pagination-controls>
+            </div>
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <!--Add Sub Task -->
+<div id="addSubTaskModal" class="modal fade boarder" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-dark">
+          <h4 class="modal-title text-white">Create a New Sub Task</h4>
+          <button type="button" class="close" data-dismiss="modal">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x text-white">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+        <div class="modal-body bg-dark">
+          <label class="text-monospace text-white">
+            Sub-Task Name:
+          </label>
+          <br>
+          <input [(ngModel)]="subTaskName" autofocus required name="subTaskName" #subtaskname="ngModel" placeholder="Enter the Sub-Task Name" type="text"
+            required class="w-100" />
+        </div>
+        <div class="modal-footer bg-dark">
+          <button class="btn btn-md text-white bg-danger" data-dismiss="modal">Cancel</button>
+          <button class="btn btn-md text-white bg-success" type="button" data-dismiss="modal" [disabled]="!subtaskname.valid" (click)="createNewUserSubTask()">Create</button>
+        </div>
+      </div>
+    </div>
+</div>

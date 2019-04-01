@@ -1,0 +1,215 @@
+<app-nav-bar (messageEvent)="recieveMessage($event)" ></app-nav-bar>
+
+<div class="page-conent top" style="background-image: url(https://s3.ap-south-1.amazonaws.com/portfolio-cloud/assets/images/bg_3.png);" [ngStyle]="{ 'margin-left' : (showSidebar==true) ? '260px' : '0px'}">
+   <div class="menubar mt-5">
+        <ul class="nav nav-tabs text-center font-weight-bold" id="myTab" role="tablist" style="font-size:.7rem;">
+          <li class="nav-item border border-white">
+            <a class="nav-link active text-white py-3" data-toggle="tab" href="#friends" role="tab" aria-controls="friends"
+              (click)="loadUnFriends()"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search mx-2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>Friends</a>
+          </li>
+          <li class="nav-item border border-white">
+            <a class="nav-link text-white py-3" data-toggle="tab" href="#recieved" role="tab" aria-controls="recieved"
+              (click)="loadReciever()"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user-plus mx-1">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="8.5" cy="7" r="4"></circle>
+                <line x1="20" y1="8" x2="20" y2="14"></line>
+                <line x1="23" y1="11" x2="17" y2="11"></line>
+              </svg>Recieved</a>
+          </li>
+          <li class="nav-item border border-white">
+            <a class="nav-link text-white py-3" data-toggle="tab" href="#sended" role="tab" aria-controls="sended"
+              (click)="loadSend()"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user-check mx-2">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="8.5" cy="7" r="4"></circle>
+                <polyline points="17 11 19 13 23 9"></polyline>
+              </svg>Send</a>
+          </li>
+        </ul>
+      </div>
+      <ngx-spinner
+      bdColor = "rgba(51, 51, 51, 0.8)" size = "large" color = "#0de353" type = "square-jelly-box"
+      ></ngx-spinner>
+      <div class="tab-content">
+        <div class="tab-pane active" id="friends" role="tabpanel">
+          <div class="row mt-5">
+            <div class="col mx-auto" style="max-width: 280px;">
+              <div class="input-group mb-3">
+                <input type="text" class="form-control searchText" aria-label="Default" aria-describedby="inputGroup-sizing-default"
+                  [(ngModel)]="search" placeholder="search friends.." (keydown)="sendUsingKeypress($event)">
+                <div class="input-group-prepend ">
+                  <span class="input-group-text bg-success border-success text-center text-white" style="cursor: pointer;"
+                    (click)="sendKeyword()" id="inputGroup-sizing-default"><svg xmlns="http://www.w3.org/2000/svg"
+                      width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                      stroke-linecap="round" stroke-linejoin="round" class="feather feather-search">
+                      <circle cx="11" cy="11" r="8"></circle>
+                      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg></span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row" *ngIf="allUsers.length>0">
+            <div class="col-lg-6 cd" *ngFor="let user of allUsers" >
+              <div class="border rounded m-3 p-1 card" style="background-image: url(https://s3.ap-south-1.amazonaws.com/portfolio-cloud/assets/images/bg_1.png);" >
+                <div class="p-1 text-white">
+                  <h2 class="text-center ml-4 mt-1 card_text" style="font-size: 1.4rem;">{{ user.firstName+" "+user.lastName | uppercase}}</h2>
+                  <ul class="text-center" style="list-style: none; margin:0; padding: 0;">
+                    <li >
+                      <h5 class="card_text" style="font-size: 1.1rem;"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mail text-success mx-2">
+                          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                          <polyline points="22,6 12,13 2,6"></polyline>
+                        </svg>{{ user.email }}</h5>
+                    </li>
+                    <li>
+                      <h1 class="card_text"  style="font-size: 1.1rem;"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-phone text-success mx-2">
+                          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                        </svg> (+{{ user.mobileNumber | slice:0:-10
+                        }})-{{ user.mobileNumber | slice:-10 }}</h1>
+                    </li>
+                    <li class="text-center m-auto pl-1"><a class="btn btn-success btn-sm sendRequest my-1" (click)="SendRequest(user.userId,0)"><svg
+                      xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user-plus mx-2">
+                      <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                      <circle cx="8.5" cy="7" r="4"></circle>
+                      <line x1="20" y1="8" x2="20" y2="14"></line>
+                      <line x1="23" y1="11" x2="17" y2="11"></line>
+                    </svg> Add Friend</a></li>
+                  </ul>
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <div class="row justify-content-center">
+              <div *ngIf="!loadMore && allUsers.length>0"><span>No more friend available</span></div>
+              <div class="font-weight-bold" style="font-size: 1.7rem;" *ngIf="allUsers.length<=0 && search.length>0"><span>Not found</span></div>
+            <span *ngIf="loadingUser == true">Loading...</span>
+            <br>
+            <button *ngIf="loadingUser == false && loadMore" type="button" class="cursorPointer btn btn-success btn-sm text-center" (click)="loadMoreUsers()">Load More</button> 
+          </div>
+          <div class="row" *ngIf="allUsers.length<=0 && status">
+              <div class="col-12 text-center mt-5">
+                <div class="info" style="font-size: 1.7rem;">No more friend available<br>Please invite your Friends</div>
+              </div>
+          </div>
+        </div>
+
+        <div class="tab-pane" id="recieved" role="tabpanel">
+          
+            <div class="row" *ngIf="allRecieved.length<=0">
+                <div class="col-12 text-center mt-5">
+                  <div class="info" style="font-size: 1.7rem;" *ngIf="allRecieved.length==0">No More Request
+                      Recieved</div>
+                </div>
+            </div>
+          <div class="row" *ngIf="allRecieved.length>0">
+            <div class="col-lg-6 cd" *ngFor="let user of allRecieved">
+              <div class="border rounded m-3 p-1 card" style="background-image: url(https://s3.ap-south-1.amazonaws.com/portfolio-cloud/assets/images/bg_1.png);">
+                <div class="p-3 text-white">
+                  <h2 class="text-center font-weight-bold card_text ml-4" style="font-size: 1.4rem;">{{ user.firstName+" "+user.lastName | uppercase}}</h2>
+                  <ul class="text-center" style="list-style: none; margin:0; padding: 0">
+                    <li>
+                      <h1 class="card_text" style="font-size: 1.1rem;"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mail text-success mx-2">
+                          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                          <polyline points="22,6 12,13 2,6"></polyline>
+                        </svg>{{ user.email }}</h1>
+                    </li>
+                    <li>
+                      <h1 class="card_text" style="font-size: 1.1rem;"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-phone text-success mx-2">
+                          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                        </svg> (+{{ user.mobileNumber | slice:0:-10
+                        }})-{{ user.mobileNumber | slice:-10 }}</h1>
+                    </li>
+                    <li class="mx-auto text-center"><a class="btn btn-success btn-sm ml-3 my-1" (click)="SendRequest(user.userId,1)"><svg
+                      xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>Accept</a>
+                  <a class="btn btn-danger ml-3 my-1 btn-sm" (click)="SendRequest(user.userId,2)"><svg xmlns="http://www.w3.org/2000/svg"
+                      width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                      stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
+                      <line x1="18" y1="6" x2="6" y2="18"></line>
+                      <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>Reject</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row justify-content-center">
+              <div *ngIf="!loadRecieved && allRecieved.length>0"><span>No More Request Recieved</span></div>
+             <span *ngIf="loadingRecieved == true">Loading...</span>
+             <br>
+             <button *ngIf="loadingRecieved == false && loadRecieved" type="button" class="cursorPointer btn btn-success btn-sm text-center" (click)="loadMoreRevceiver()">Load More</button> 
+           </div>
+           
+        </div>
+
+        
+        <div class="tab-pane" id="sended" role="tabpanel">
+          <div class="row" *ngIf="allSender.length>0">
+            <div class="col-lg-6 cd" *ngFor="let user of allSender">
+              <div class="border rounded m-3 p-1 card" style="background-image: url(https://s3.ap-south-1.amazonaws.com/portfolio-cloud/assets/images/bg_1.png);">
+                <div class="p-3 text-white">
+                  <h2 class="mx-2 text-center ml-4 card_text" style="font-size: 1.4rem;">{{ user.firstName+" "+user.lastName | uppercase}}</h2>
+                  <ul class="text-center" style="list-style: none; margin:0; padding: 0">
+                    <li>
+                      <h1 class="mt-1 card_text" style="font-size: 1.1rem;"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mail text-success mx-2">
+                          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                          <polyline points="22,6 12,13 2,6"></polyline>
+                        </svg>{{ user.email }}</h1>
+                    </li>
+                    <li>
+                      <h1  class="card_text" style="font-size: 1.1rem;"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-phone text-success mx-2">
+                          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                        </svg> (+{{ user.mobileNumber | slice:0:-10
+                        }})-{{ user.mobileNumber | slice:-10 }}</h1>
+                    </li>
+                    <li class="mx-auto text-center"><a class="btn btn-danger btn-sm" (click)="SendRequest(user.userId,5)"><svg xmlns="http://www.w3.org/2000/svg"
+                      width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                      stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2">
+                      <polyline points="3 6 5 6 21 6"></polyline>
+                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                      <line x1="10" y1="11" x2="10" y2="17"></line>
+                      <line x1="14" y1="11" x2="14" y2="17"></line>
+                    </svg> Remove </a></li>
+                  </ul>
+
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <div class="row justify-content-center">
+              <div *ngIf="!loadSender && allSender.length>0"><span>No More Request Sended</span></div>
+              <span *ngIf="loadingSender == true">Loading...</span>
+              <br>
+              <button *ngIf="loadingSender == false && loadSender"type="button" class="cursorPointer btn btn-success btn-sm text-center" (click)="loadMoreSender()">Load More</button> 
+          </div>
+
+         
+
+          <div class="row" *ngIf="allSender.length<=0">
+              <div class="col-12 text-center mt-5">
+                <div class="info" style="font-size: 1.7rem;" *ngIf="allSender.length==0">You Have Not Send Any
+                  Request</div>
+              </div>
+          </div>
+      
+
+        </div>
+      </div>
+</div>  

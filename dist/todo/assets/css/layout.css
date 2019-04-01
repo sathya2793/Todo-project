@@ -1,0 +1,115 @@
+/* form */
+
+.ng-valid[required],
+.ng-valid.required {
+  border-left: 5px solid #42A948;
+}
+
+.ng-invalid:not(form) {
+  border-left: 5px solid #a94442;
+}
+
+.alert {
+  color: red;
+}
+
+li {
+  list-style: none;
+}
+
+.form-control {
+  font-size: 16px;
+  transition: all 0.4s;
+  box-shadow: none;
+}
+
+.form-control:focus {
+  border-color: #5cb85c;
+  border-style: solid;
+  border-width: medium;
+}
+
+/* password */
+.eye,.eye1,.eye-splash,.eye-splash1{
+  cursor: pointer;
+  z-index: 1;
+  position:relative;
+}
+ 
+.eye-splash:before,.eye-splash1:before {
+  content: "\f06e"; 
+  font-family: FontAwesome;
+  top:0;
+}
+
+.eye:before,.eye1:before {
+  content: "\f070"; 
+  font-family: FontAwesome;
+  top:0;
+}
+
+/* card */
+
+.card1 {
+  background-color: #2d3235;
+  max-width: 400px;
+  min-width: 300px;
+  margin: 0 auto;
+  float: none;
+  box-shadow: 0 19px 38px rgba(0, 0, 0, 0.30), 0 15px 12px rgba(0, 0, 0, 0.22);
+}
+
+.card1 a {
+  color: #5cb85c;
+}
+
+.card1 h2 {
+  font-size: 34px;
+  margin: 10px 0 15px;
+}
+
+.card1 .hint-text {
+  color: #999;
+  margin-bottom: 20px;
+}
+
+.card1 .form-group {
+  margin-bottom: 20px;
+}
+
+.card1.small {
+  font-size: 13px;
+}
+/* button */
+
+.card1 .btn {
+  font-size: 18px;
+  line-height: 26px;
+  font-weight: bold;
+}
+
+.btn:hover:enabled {
+  transition:ease-in;
+}
+
+@keyframes bounce {
+  from {
+    transform: translateY(0px);
+  }
+  to {
+    transform: translateY(-15px);
+  }
+}
+@-webkit-keyframes bounce {
+  from {
+    transform: translateY(0px);
+  }
+  to {
+    transform: translateY(-15px);
+  }
+}
+
+.bounce {
+  animation: bounce 1s infinite alternate;
+  -webkit-animation: bounce 1s infinite alternate;
+}

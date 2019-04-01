@@ -1,0 +1,367 @@
+<app-nav-bar (messageEvent)="recieveMessage($event)"></app-nav-bar>
+
+<div class="page-conent top" style="background-image: url(https://s3.ap-south-1.amazonaws.com/portfolio-cloud/assets/images/bg_3.png);"
+  [ngStyle]="{ 'margin-left' : (showSidebar==true) ? '260px' : '0px'}">
+  <!--Modal to add item List-->
+  <div class="manageLists" *ngIf="!showTaskPage">
+    <div class="container mt-5">
+        <div class="col my-5 d-flex justify-content-center">
+          <button type="button" class="btn btn-success btn-lg lead text-monospace font-weight-bold  mt-5 text-white p-3 mx-auto"
+            data-toggle="modal" data-target="#newModal" title="Add New ToDo List" (click)="resetNewList()">create a Todo List
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle mx-1">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="16"></line>
+              <line x1="8" y1="12" x2="16" y2="12"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <!--item List-->
+      <div class="row justify-content-md-center">
+        <div class="col-md-8 col-offset-2">
+            <nav id="menu" class="bg-info p-2 mx-2" *ngIf="allLists.length>0">
+                <ul class="nav nav-pill text-center d-flex justify-content-center" id="myTodoTab" role="tablist">
+                  <li class="nav-item border border-info">
+                    <a href="#all" class="nav-link active text-white" data-toggle="tab" role="tab" aria-controls="all"><svg
+                        xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trello">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <rect x="7" y="7" width="3" height="9"></rect>
+                        <rect x="14" y="7" width="3" height="5"></rect>
+                      </svg>ALL LISTS</a>
+                  </li>
+                  <li class="nav-item border border-info">
+                    <a href="#public" class="nav-link  text-white" data-toggle="tab" role="tab" aria-controls="public">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                      PUBLIC</a>
+                  </li>
+                  <li class="nav-item border border-info">
+                    <a href="#private" class="nav-link  text-white" data-toggle="tab" role="tab" aria-controls="private">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye-off"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+                      PRIVATE</a>
+                  </li>
+                </ul>
+            </nav>
+
+          <div class="tab-content" id="myTabContent">
+
+          <div class="tab-pane active" id="all" role="tabpanel">
+            <div *ngIf="allLists.length>0">
+            <ul class="list-group mx-2" *ngFor="let lists of allLists | paginate: { itemsPerPage: 3, currentPage:pageLists, id: 'first'}">
+              <li class="list-group-item my-1 card" style="background-image: url(https://s3.ap-south-1.amazonaws.com/portfolio-cloud/assets/images/bg_1.png);">
+                    
+                  <h4 class="list-group-item-heading text-monospace text-white card-text">{{lists.listName|uppercase}} <span
+                      class="badge badge-primary badge-pill font-weight-light small">{{lists.countTask}}
+                      Tasks </span></h4>
+                  <div class="buttons float-right">
+                    <a class="btn btn-primary btn-sm" title="Manage Tasks" (click)="setListData(lists.listId,lists.listName)">
+                      <i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus text-white">
+                          <line x1="12" y1="5" x2="12" y2="19"></line>
+                          <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                      </i>
+                    </a>
+                    <a href="" class="btn btn-secondary btn-sm mx-1" data-toggle="modal" data-target="#editModal" title="Edit"
+                      (click)="setEditListData(lists.listId,lists.listName,lists.visibility)">
+                      <i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit">
+                          <path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34"></path>
+                          <polygon points="18 2 22 6 12 16 8 16 8 12 18 2"></polygon>
+                        </svg>
+                      </i>
+                    </a>
+                    <a href="" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteModal" title="Delete"
+                      (click)="setDeleteListData(lists.listId)">
+                      <i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2">
+                          <polyline points="3 6 5 6 21 6"></polyline>
+                          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                          <line x1="10" y1="11" x2="10" y2="17"></line>
+                          <line x1="14" y1="11" x2="14" y2="17"></line>
+                        </svg>
+                      </i>
+                    </a>
+                  </div>
+                <div class="row">
+                  <span class="text-white small float-left">Modified On: {{ lists.modifiedOn | date:'short' }}</span>
+                </div>
+
+              </li>
+            </ul>
+            <div class="panel-footer d-flex bg-info text-white pt-1 m-2" *ngIf="allLists.length>3">
+                <pagination-controls (pageChange)="pageLists = $event" id="first" responsive="true"></pagination-controls>
+            </div>
+            </div>
+          </div>
+
+          <div class="tab-pane" id="public" role="tabpanel">
+              <div class="row"  *ngIf="allPublic.length<=0 && allLists.length>0">
+                  <div class="col-12 text-center">
+                   <div class="info" style="font-size: 1.4rem;" >No Public List Available</div>
+                  </div>
+                </div>
+              <ul class="list-group mx-2" *ngIf="allPublic.length>0">
+                <li class="list-group-item my-1 card" *ngFor="let lists of allPublic | paginate: { itemsPerPage: 3, currentPage:pagePublic, id: 'second'}"
+                style="background-image: url(https://s3.ap-south-1.amazonaws.com/portfolio-cloud/assets/images/bg_1.png);">
+
+                    <h4 class="list-group-item-heading text-monospace text-white card-text">{{lists.listName|uppercase}} <span
+                        class="badge badge-primary badge-pill font-weight-light small">{{lists.countTask}}
+                        Tasks </span></h4>
+                    <div class="buttons float-right">
+                      <a class="btn btn-primary btn-sm" title="Manage Tasks" (click)="setListData(lists.listId,lists.listName)">
+                        <i>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus text-white">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                          </svg>
+                        </i>
+                      </a>
+                      <a href="" class="btn btn-secondary btn-sm mx-1" data-toggle="modal" data-target="#editModal" title="Edit"
+                        (click)="setEditListData(lists.listId,lists.listName,lists.visibility)">
+                        <i>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit">
+                            <path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34"></path>
+                            <polygon points="18 2 22 6 12 16 8 16 8 12 18 2"></polygon>
+                          </svg>
+                        </i>
+                      </a>
+                      <a href="" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteModal" title="Delete"
+                        (click)="setDeleteListData(lists.listId)">
+                        <i>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            <line x1="10" y1="11" x2="10" y2="17"></line>
+                            <line x1="14" y1="11" x2="14" y2="17"></line>
+                          </svg>
+                        </i>
+                      </a>
+                    </div>
+                  <div class="row">
+                    <span class="text-white small float-left">Modified On: {{ lists.modifiedOn | date:'short' }}</span>
+                  </div>
+  
+                </li>
+              </ul>
+              <div class="panel-footer d-flex bg-info text-white pt-3 m-1" *ngIf="allPublic.length>3">
+                  <pagination-controls (pageChange)="pagePublic = $event" id="second" responsive="true"></pagination-controls>
+                </div>
+            </div>
+
+            <div class="tab-pane" id="private" role="tabpanel">
+                <div class="row"  *ngIf="allPrivate.length<=0 && allLists.length>0">
+                    <div class="col-12 text-center">
+                     <div class="info" style="font-size: 1.4rem;" >No Private List Available</div>
+                    </div>
+                  </div>
+                <ul class="list-group mx-2" *ngIf="allPrivate.length>0">
+                  <li class="list-group-item my-1 card" *ngFor="let lists of allPrivate  | paginate: { itemsPerPage: 3, currentPage:pagePrivate, id: 'thrid'}"
+                  style="background-image: url(https://s3.ap-south-1.amazonaws.com/portfolio-cloud/assets/images/bg_1.png);">
+                      <h4 class="list-group-item-heading text-monospace text-white card-text">{{lists.listName|uppercase}} <span
+                          class="badge badge-primary badge-pill font-weight-light small">{{lists.countTask}}
+                          Tasks </span></h4>
+                      <div class="buttons float-right">
+                        <a class="btn btn-primary btn-sm" title="Manage Tasks" (click)="setListData(lists.listId,lists.listName)">
+                          <i>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus text-white">
+                              <line x1="12" y1="5" x2="12" y2="19"></line>
+                              <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                          </i>
+                        </a>
+                        <a href="" class="btn btn-secondary btn-sm mx-1" data-toggle="modal" data-target="#editModal" title="Edit"
+                          (click)="setEditListData(lists.listId,lists.listName,lists.visibility)">
+                          <i>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit">
+                              <path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34"></path>
+                              <polygon points="18 2 22 6 12 16 8 16 8 12 18 2"></polygon>
+                            </svg>
+                          </i>
+                        </a>
+                        <a href="" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteModal" title="Delete"
+                          (click)="setDeleteListData(lists.listId)">
+                          <i>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2">
+                              <polyline points="3 6 5 6 21 6"></polyline>
+                              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                              <line x1="10" y1="11" x2="10" y2="17"></line>
+                              <line x1="14" y1="11" x2="14" y2="17"></line>
+                            </svg>
+                          </i>
+                        </a>
+                      </div>
+
+                    <div class="row">
+                      <span class="text-white small float-left">Modified On: {{ lists.modifiedOn | date:'short' }}</span>
+                    </div>
+    
+                  </li>
+                </ul>
+                <div class="panel-footer d-flex bg-info text-white pt-3 m-1" *ngIf="allPrivate.length>3">
+                    <pagination-controls (pageChange)="pagePrivate = $event" id="thrid" responsive="true"></pagination-controls>
+                  </div>
+              </div>
+
+            </div>
+
+
+          <div *ngIf="allLists.length===0" class="d-flex justify-content-center mt-5">
+              <div class="bounce"><svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-up mx-3"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+              </div> 
+            <div class="font-weight-bold" style="font-size: 1rem;">PLEASE CREATE A NEW TODO LIST</div>
+            </div>
+          </div>
+        </div>
+  </div>
+
+  <!--Modal to add item Task-->
+  <div id="manageTasks" *ngIf="showTaskPage">
+     <app-manage-task [shareUserId]="userId" [listName]="listName" [listId]="listId" (goBackListEvent)="goBackList()" ></app-manage-task>
+    </div>
+  </div>
+
+<!--Add Modal -->
+<div id="newModal" class="modal fade boarder" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-dark">
+        <h4 class="modal-title text-white">Create a New List</h4>
+        <button type="button" class="close" data-dismiss="modal">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x text-white">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <form [formGroup]="listForm" novalidate>
+        <div class="modal-body bg-dark">
+          <div class="form-group">
+            <label class="text-monospace text-white">
+              List Name:
+            </label>
+            <input formControlName="listName" autofocus name="listName" class="form-control" placeholder="Enter the List Name"
+              type="text" required />
+          </div>
+          <div class="form-group">
+            <label class="text-monospace text-white">
+              Visibility:
+            </label>
+            <div class="from-check form-check-inline text-white mx-auto p-3">
+              <input type="radio" class="form-check-input" name="visibility" value="public" formControlName="visibility">
+              <label class="form-check-label" for="visible1">Public</label>
+            </div>
+            <div class="form-check form-check-inline text-white mx-auto p-3">
+              <input type="radio" class="form-check-input" name="visibility" value="private" formControlName="visibility">
+              <label class="form-check-label" for="visible2">Private</label>
+            </div>
+          </div>
+          <p class="text-white text-monospace small" *ngIf="listForm.value.visibility==='public'">Everyone can see your
+            List.
+          </p>
+          <p class="text-white text-monospace small" *ngIf="listForm.value.visibility=='private'">Only you can see your
+            List.</p>
+        </div>
+        <div class="modal-footer bg-dark">
+          <button class="btn btn-md text-white bg-danger" data-dismiss="modal">Cancel</button>
+          <button class="btn btn-md text-white bg-success" type="button" data-dismiss="modal" (click)="createNewUserList()"
+            [disabled]="!listForm.valid">Create</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Modal -->
+<div id="editModal" class="modal fade boarder" role="dialog">
+  <div class="modal-dialog ">
+    <div class="modal-content ">
+      <div class="modal-header bg-dark">
+        <h4 class="modal-title text-white">Edit List</h4>
+        <button type="button" class="close" data-dismiss="modal">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x text-white">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <form [formGroup]="editListForm" novalidate>
+        <div class="modal-body bg-dark">
+          <div class="form-group">
+            <label class="text-monospace text-white">
+              List Name:
+            </label>
+            <input formControlName="editListName" autofocus name="editListName" class="form-control" placeholder="Enter the List Name"
+              type="text" required />
+          </div>
+          <div class="form-group">
+            <label class="text-monospace text-white">
+              Visibility:
+            </label>
+            <div class="from-check form-check-inline text-white mx-auto p-3">
+              <input type="radio" class="form-check-input" name="editListVisibility" value="public" formControlName="editListVisibility">
+              <label class="form-check-label" for="visible1">Public</label>
+            </div>
+            <div class="form-check form-check-inline text-white mx-auto p-3">
+              <input type="radio" class="form-check-input" name="editListVisibility" value="private" formControlName="editListVisibility">
+              <label class="form-check-label" for="visible2">Private</label>
+            </div>
+          </div>
+          <p class="text-white text-monospace small" *ngIf="editListForm.value.editListVisibility==='public'">Everyone
+            can see your
+            List.
+          </p>
+          <p class="text-white text-monospace small" *ngIf="editListForm.value.editListVisibility=='private'">Only you
+            can see your
+            List.</p>
+        </div>
+        <div class="modal-footer bg-dark">
+          <button class="btn btn-md text-white bg-danger" data-dismiss="modal">Cancel</button>
+          <button class="btn btn-md text-white bg-success" data-dismiss="modal" (click)="updatedUserList(editUserId)"
+            [disabled]="!editListForm.valid">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Modal -->
+<div id="deleteModal" class="modal fade boarder" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form>
+        <div class="modal-header bg-dark">
+          <h4 class="modal-title text-white">Delete List</h4>
+          <button type="button" class="close" data-dismiss="modal">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x text-white">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+        <div class="modal-body bg-dark">
+          <p class="text-white">Are you sure you want to delete these List?</p>
+          <p class="text-warning"><small>This action cannot be undone.</small></p>
+        </div>
+        <div class="modal-footer bg-dark">
+          <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+          <input type="submit" class="btn btn-danger" data-dismiss="modal" value="Delete" (click)="deletedUserList(deleteUserId)">
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
