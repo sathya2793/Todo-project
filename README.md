@@ -1,0 +1,2 @@
+# Todo-project
+This app has two modes singleUser mode and MultiUser mode. In singleUser user can create a todo list which is private. user can add, delete, update the items, sub-items to todo list and can also undo the previous actions done on todo list. In Multi user mode, user can share his todo with friends who can also add, delete update the items/subitems to the list. Everyone can undo the actions done previously on the list.
