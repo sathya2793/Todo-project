@@ -2,35 +2,41 @@
 
 This app has two modes singleUser mode and MultiUser mode. In singleUser user can create a todo list which is private. user can add, delete, update the items, sub-items to todo list and can also undo the previous actions done on todo list. In Multi user mode, user can share his todo with friends who can also add, delete update the items/subitems to the list. Everyone can undo the actions done previously on the list.
 
-# Project Url:https://todo.sathyainfotechpro.com/
+Project Url:https://todo.sathyainfotechpro.com/
 
-# API Documentation: https://todoapi.sathyainfotechpro.com/
+API Documentation: https://todoapi.sathyainfotechpro.com/
 
-# Socket.IO Events Documentation:https://todoevent.sathyainfotechpro.com/
+Socket.IO Events Documentation:https://todoevent.sathyainfotechpro.com/
 
 # Getting Started
 
 The mean stack is intended to provide a simple and fun starting point for cloud native fullstack javascript applications.
 MEAN is a set of Open Source components that together, provide an end-to-end framework for building dynamic web applications; starting from the top (code running in the browser) to the bottom (database). The stack is made up of:
-MongoDB : Document database – used by your back-end application to store its data as JSON (JavaScript Object Notation) documents
-Express (sometimes referred to as Express.js): Back-end web application framework running on top of Node.js
-Angular (formerly Angular.js): Front-end web app framework; runs your JavaScript code in the user's browser, allowing your application UI to be dynamic
-Node.js : JavaScript runtime environment – lets you implement your application back-end in JavaScript
+* MongoDB : Document database – used by your back-end application to store its data as JSON (JavaScript Object Notation) documents
+* Express (sometimes referred to as Express.js): Back-end web application framework running on top of Node.js
+* Angular (formerly Angular.js): Front-end web app framework; runs your JavaScript code in the user's browser, allowing your application UI to be dynamic
+* Node.js : JavaScript runtime environment – lets you implement your application back-end in JavaScript
 
 # Pre-requisites
-git - [Installation guide](https://www.linode.com/docs/development/version-control/how-to-install-git-on-linux-mac-and-windows/) .
-node.js - [Download page](https://nodejs.org/en/download/) .
-npm - comes with node or download yarn - [Download page](https://yarnpkg.com/lang/en/docs/install) .
-mongodb - [Download page](https://www.mongodb.com/download-center/community) .
+* git - [Installation guide](https://www.linode.com/docs/development/version-control/how-to-install-git-on-linux-mac-and-windows/).
+* node.js - [Download page](https://nodejs.org/en/download/).
+* npm - comes with node or download yarn - [Download page](https://yarnpkg.com/lang/en/docs/install).
+* mongodb - [Download page](https://www.mongodb.com/download-center/community).
 
 # Installation
 
 git clone https://github.com/sathya2793/Todo-project/
+<br />
 cd Todo-project/todo_backend
+<br />
 npm install
+<br />
 node index.js
+<br />
 cd ..
+<br />
 npm install
+<br />
 ng serve -o
 
 
